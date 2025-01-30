@@ -43,7 +43,7 @@
             <td>${{ book.price }}</td>
             <td>{{ book.stock }}</td>
             <td>
-                <button onclick="editBook( '{{ book.title|escapejs }}', '{{ book.author|escapejs }}', '{{ book.genre|escapejs }}', '{{ book.price }}', '{{ book.stock }}')">Edit</button>
+                <button onclick="editBook('{{ book.id|escapejs }}', '{{ book.title|escapejs }}', '{{ book.author|escapejs }}', '{{ book.genre|escapejs }}', '{{ book.price }}', '{{ book.stock }}')">Edit</button>
 
 
 
