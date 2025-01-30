@@ -3,30 +3,81 @@
 {% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>CRUD</title>
+    <title>Bookshop - CRUD</title>
     <link rel="stylesheet" href="{% static 'css/mystyle.css' %}">
 </head>
 <body>
-<h1> Welcome to UoS Bookshop</h1>
-<img src="{% static 'images/ncvbook2.jpg'%}">
-<table border="1">
-    <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Genre</th>
-        <th>Price</th>
-        <th>Stock</th>
-    </tr>
-{% for bk in books %}
-    <tr><td>{{bk.title}}</td>
-        <td>{{bk.author}}</td>
-        <td>{{bk.genre}}</td>
-        <td>{{bk.price}}</td>
-        <td>{{bk.stock}}   </td>
-        <td><button name="UPDATE">UPDATE</button></td>
-        <td><button name="DEL">DELETE</button></td>
+    <h1>UoS Bookshop</h1>
+
+    <!-- Add Book Button -->
+    <button onclick="toggleForm()">Add New Book</button>
+
+    <!-- Book Form (Hidden by Default) -->
+    <div id="book-form" style="display: none;">
+        <h2 id="form-title">Add Book</h2>
+        <form method="post" id="bookForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" id="book-id" name="book-id">
+            <button type="submit">Save</button>
+            <button type="button" onclick="toggleForm()">Cancel</button>
+        </form>
+    </div>
+
+    <!-- Books Table -->
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
         </tr>
-{% endfor %}
-</table>
+        {% for book in books %}
+        <tr>
+            
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.genre }}</td>
+            <td>${{ book.price }}</td>
+            <td>{{ book.stock }}</td>
+            <td>
+                <button onclick="editBook( '{{ book.title|escapejs }}', '{{ book.author|escapejs }}', '{{ book.genre|escapejs }}', '{{ book.price }}', '{{ book.stock }}')">Edit</button>
+
+
+
+                <form method="post" style="display:inline;" action="{% url 'book_delete' book.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No books available.</td></tr>
+        {% endfor %}
+    </table>
+
+    <!-- JavaScript for Form Toggle & Edit -->
+    <script>
+        function toggleForm() {
+            var formDiv = document.getElementById("book-form");
+            formDiv.style.display = (formDiv.style.display === "none") ? "block" : "none";
+            document.getElementById("form-title").innerText = "Add Book";
+            document.getElementById("bookForm").reset();
+            document.getElementById("book-id").value = "";
+        }
+
+        function editBook(id, title, author, genre, price, stock) {
+            document.getElementById("form-title").innerText = "Edit Book";
+            document.getElementById("book-id").value = id;
+            document.getElementById("id_title").value = title;
+            document.getElementById("id_author").value = author;
+            document.getElementById("id_genre").value = genre;
+            document.getElementById("id_price").value = price;
+            document.getElementById("id_stock").value = stock;
+            document.getElementById("book-form").style.display = "block";
+        }
+    </script>
 </body>
 </html>
